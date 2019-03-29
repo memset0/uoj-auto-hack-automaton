@@ -1,0 +1,8 @@
+problem: 195
+
+limit: 20
+language:
+  C++:
+    compile: "g++ {source} -o {program} -std=c++98 -O2 -DONLINE_JUDGE && {program} < {input} > {output}"
+  C++11:
+    compile: "g++ {source} -o {program} -std=c++11 -O2 -DONLINE_JUDGE && {program} < {input} > {output}"
