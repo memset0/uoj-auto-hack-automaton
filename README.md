@@ -6,7 +6,7 @@
 
 首先需要安装依赖 `Python3` & `requests` & `pyyaml` 。
 
-把输入文件放入 `data.in` ，答案文件放入 `data.ans` ，修改 `config.yml` 里的 `problem` 为你需要 auto-hack 的题目编号，如需要还可修改爬取的提交记录编号在 $[from,to]$ 的范围之内，可修改编译命令。
+把输入文件放入 `data.in` ，答案文件放入 `data.ans` ，修改 `config.yml` 里的 `problem` 为你需要 auto-hack 的题目编号，如需要还可修改爬取的提交记录编号在 [from,to]​ 的范围之内，可修改编译命令。
 
 运行 `python3 main.py` 即可。
 
