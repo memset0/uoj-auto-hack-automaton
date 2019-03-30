@@ -1,6 +1,9 @@
-problem: 195
+problem: 1
 
-limit: 20
+from: 1
+
+to: 1000000
+
 language:
   C++:
     compile: "g++ {source} -o {program} -std=c++98 -O2 -DONLINE_JUDGE && {program} < {input} > {output}"

@@ -27,6 +27,8 @@ class Commit:
 		self.source = html.unescape(source)
 
 def download_commit(problem, page=1, language='c++'):
+	global config
+	global commitend
 	url = "http://uoj.ac/submissions?problem_id={id}&min_score=100&max_score=100&language={lang}&page={page}".format(
 		id = problem,
 		page = page,
@@ -37,12 +39,17 @@ def download_commit(problem, page=1, language='c++'):
 	commits = [re.findall(r'[0-9][0-9]*', it)[0] for it in re.findall(r'<a href="/submission/[0-9]*">#[0-9]*</a>', text)]
 	answer = []
 	for commit in commits:
-		answer.append(Commit(commit, language))
+                if int(commit) >= config['from']:
+                        commitend=False
+                if int(commit) >= config['from'] and int(commit) <= config['to']:
+                        answer.append(Commit(commit, language))
 	return answer
 
 def judge(source, language):
 	global config
-	with open('source.cpp', 'w+') as source_file:
+	if os.path.exists('data.out'):
+                os.remove('data.out')
+	with open('source.cpp', 'w+', encoding='utf-8') as source_file:
 		source_file.write(source)
 		source_file.close()
 	command = config['language'][language]['compile'].format(
@@ -51,27 +58,29 @@ def judge(source, language):
 		input = os.path.abspath('data.in'),
 		output = os.path.abspath('data.out')
 	)
-	# print('$', command)
 	os.system(command)
-	if not os.system('diff .output data.ans -w'):
+	if not os.system('fc data.out data.ans /w'):
 		return False
 	return True
 
 def init():
 	global config
+	global commitend
 	config = yaml.load(open('config.yml', 'r+', encoding="utf8").read())
 	commits = []
 	for language in config['language']:
-		for page in range(1, config['limit'] + 1):
-			answer = download_commit(config['problem'], page, language)
-			if len(answer) == 0:
-				break
-			for commit in answer:
-				commit.output()
-				status = judge(commit.source, commit.language)
-				if status:
-					input('Wrong Answer!')
-			commits.extend(answer)
+		for page in range(1, 100):
+                        commitend=True
+                        answer = download_commit(config['problem'], page, language)
+                        if commitend:
+                                break
+                        for commit in answer:
+                                commit.output()
+                                status = judge(commit.source, commit.language)
+                                if status:
+                                        print("http://uoj.ac/submission/"+commit.id)
+                                        input('Incorrect!')
+                        commits.extend(answer)
 
 if __name__ == '__main__':
 	init()
